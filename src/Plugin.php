@@ -106,12 +106,11 @@ final class Plugin implements EventSubscriberInterface, PluginInterface
 
         $finder = new Finder($vendorDir);
         $fs = $this->getFilesystem();
-        $fsOptions = ['copy_on_windows' => true, 'override' => true];
 
         foreach ($finder->getCodeStandardFolders() as $folder) {
             $targetDir = $standardsDir . '/' . basename($folder);
 
-            $fs->mirror($folder, $targetDir, null, $fsOptions);
+            $fs->symlink($folder, $targetDir, true);
         }
     }
 

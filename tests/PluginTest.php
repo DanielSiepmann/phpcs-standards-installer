@@ -65,7 +65,7 @@ class PluginTest extends TestCase
     {
         $fs = $this
             ->getMockBuilder(Filesystem::class)
-            ->setMethods(['exists', 'mirror'])
+            ->setMethods(['exists', 'symlink'])
             ->getMock();
 
         $fs
@@ -75,7 +75,7 @@ class PluginTest extends TestCase
 
         $fs
             ->expects($this->never())
-            ->method('mirror');
+            ->method('symlink');
 
         list($composer, $io) = $this->createComposer();
 
@@ -89,7 +89,7 @@ class PluginTest extends TestCase
     /**
      * @test
      */
-    public function copies_phpcs_standards()
+    public function links_phpcs_standards()
     {
         $fs = new Filesystem();
         $fs->mkdir([
@@ -98,7 +98,6 @@ class PluginTest extends TestCase
         ]);
         $fs->touch(__DIR__ . '/vendor/test-standard/ruleset.xml');
         file_put_contents(__DIR__ . '/vendor/test-standard/ruleset.xml', '<ruleset');
-
 
         list($composer, $io) = $this->createComposer();
 
