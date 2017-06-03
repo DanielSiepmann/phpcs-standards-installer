@@ -51,7 +51,7 @@ final class Plugin implements EventSubscriberInterface, PluginInterface
      *
      * @return string
      */
-    private function getVendorDir()// : string
+    private function getVendorFolder()// : string
     {
         if (null === $this->vendorDir) {
             $this->vendorDir = realpath($this->composer->getConfig()->get('vendor-dir'));
@@ -68,7 +68,7 @@ final class Plugin implements EventSubscriberInterface, PluginInterface
     private function isPhpcsInstalled()// : bool
     {
         // TODO: Maybe replace this with composer calls
-        return $this->getFilesystem()->exists($this->getVendorDir() . '/' . Finder::PATH_PHPCS);
+        return $this->getFilesystem()->exists($this->getVendorFolder() . '/' . Finder::PATH_PHPCS);
     }
 
     /**
@@ -101,14 +101,14 @@ final class Plugin implements EventSubscriberInterface, PluginInterface
             return;
         }
 
-        $vendorDir = $this->getVendorDir();
-        $standardsDir = $vendorDir . '/' . Finder::PATH_STANDARDS;
+        $vendorFolder = $this->getVendorFolder();
+        $standardsFolder = $vendorFolder . '/' . Finder::PATH_STANDARDS;
 
-        $finder = new Finder($vendorDir);
+        $finder = new Finder($vendorFolder);
         $fs = $this->getFilesystem();
 
         foreach ($finder->getCodeStandardFolders() as $folder) {
-            $targetDir = $standardsDir . '/' . basename($folder);
+            $targetDir = $standardsFolder . '/' . basename($folder);
 
             $fs->symlink($folder, $targetDir, true);
         }
