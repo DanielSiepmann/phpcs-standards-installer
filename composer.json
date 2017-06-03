@@ -1,0 +1,33 @@
+{
+    "name": "ts/phpcs-standards-installer",
+    "type": "composer-plugin",
+    "description": "Composer plugin to find and install third-party PHPCS standards",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Timo Schäfer",
+            "email": "timo.a.schaefer@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "composer-plugin-api": "^1.1",
+        "squizlabs/php_codesniffer": "^2.0",
+        "symfony/finder": "^2.0 || ^3.0",
+        "symfony/filesystem": "^2.0 || ^3.0"
+    },
+    "require-dev": {
+        "composer/composer": "^1.4",
+        "phpunit/phpunit": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TS\\PhpcsInstaller\\": [
+                "src/"
+            ]
+        }
+    },
+    "extra": {
+        "class": "TS\\PhpcsInstaller\\Plugin"
+    }
+}

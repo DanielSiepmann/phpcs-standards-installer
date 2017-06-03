@@ -1,0 +1,20 @@
+language: php
+
+matrix:
+    fast_finish: true
+    include:
+        - php: 5.6
+        - php: 7.0
+        - php: 7.1
+        - php: nightly
+          env: COMPOSER_OPTIONS="--ignore-platform-reqs"
+
+    allow_failures:
+        - php: nightly
+
+install:
+    - composer update -n $COMPOSER_OPTIONS
+
+script:
+    - vendor/bin/phpcs --standard=PSR2 -p src/
+    - vendor/bin/phpunit
