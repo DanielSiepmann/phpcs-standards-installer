@@ -8,6 +8,8 @@ use Composer\EventDispatcher\EventDispatcher;
 use Composer\IO\NullIO;
 use Composer\Plugin\PluginInterface;
 use Composer\Plugin\PluginManager;
+use Composer\Script\Event;
+use Composer\Script\ScriptEvents;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use TS\PhpcsInstaller\Finder;
@@ -61,7 +63,29 @@ class PluginTest extends TestCase
     /**
      * @test
      */
-    public function does_not_copy_anything_when_phpcs_is_not_installed()
+    public function provide_disabled_conditions()
+    {
+        return [
+            'phpcs_is_not_installed' => [
+                'fs_exists_expectation' => $this->once(),
+                'dev_mode' => true,
+            ],
+
+            'run_in_no_dev_mode' => [
+                'fs_exists_expectation' => $this->never(),
+                'dev_mode' => false,
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider provide_disabled_conditions
+     *
+     * @param \PHPUnit_Framework_MockObject_Matcher_InvokedCount $fsExpectation
+     * @param bool $devMode
+     */
+    public function does_not_copy_anything_on_certain_conditions($fsExpectation, $devMode)
     {
         $fs = $this
             ->getMockBuilder(Filesystem::class)
@@ -69,7 +93,7 @@ class PluginTest extends TestCase
             ->getMock();
 
         $fs
-            ->expects($this->once())
+            ->expects($fsExpectation)
             ->method('exists')
             ->willReturn(false);
 
@@ -83,7 +107,7 @@ class PluginTest extends TestCase
         $plugin->activate($composer, $io);
         $plugin->setFilesystem($fs);
 
-        $plugin->onPreAutoloadDump();
+        $plugin->onPreAutoloadDump(new Event(ScriptEvents::PRE_AUTOLOAD_DUMP, $composer, $io, $devMode));
     }
 
     /**
@@ -104,7 +128,7 @@ class PluginTest extends TestCase
         $plugin = new Plugin();
         $plugin->activate($composer, $io);
 
-        $plugin->onPreAutoloadDump();
+        $plugin->onPreAutoloadDump(new Event(ScriptEvents::PRE_AUTOLOAD_DUMP, $composer, $io, true));
 
         $this->assertTrue($fs->exists(__DIR__ . '/vendor/' . Finder::PATH_STANDARDS . '/test-standard'));
 

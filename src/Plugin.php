@@ -5,6 +5,7 @@ namespace TS\PhpcsInstaller;
 use Composer\Composer;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
+use Composer\Script\Event;
 use Composer\Script\ScriptEvents;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -93,11 +94,12 @@ final class Plugin implements EventSubscriberInterface, PluginInterface
     /**
      * Finds and installs third-party PHPCS standards.
      *
+     * @param Event $event
      * @return void
      */
-    public function onPreAutoloadDump()// : void
+    public function onPreAutoloadDump(Event $event)// : void
     {
-        if (!$this->isPhpcsInstalled()) {
+        if (!$event->isDevMode() || !$this->isPhpcsInstalled()) {
             return;
         }
 
