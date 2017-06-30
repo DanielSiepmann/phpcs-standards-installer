@@ -112,7 +112,7 @@ final class Plugin implements EventSubscriberInterface, PluginInterface
         foreach ($finder->getCodeStandardFolders() as $folder) {
             $targetDir = $standardsFolder . '/' . basename($folder);
 
-            $fs->symlink($folder, $targetDir, true);
+            $fs->mirror($folder, $targetDir, null, ['override' => true, 'copy_on_windows' => true]);
         }
     }
 
